@@ -5,6 +5,10 @@ api_version: 1
 threadsafe: true
 
 handlers:
+- url: /
+  static_files: index.html
+  upload: html
+
 - url: /(.*\.(html|gif|png|jpg))
   static_files: \1
   upload: (.*\.(html|gif|png|jpg))
