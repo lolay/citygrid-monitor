@@ -1,0 +1,13 @@
+application: citygrid-monitor
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /(.*\.(html|gif|png|jpg))
+  static_files: \1
+  upload: (.*\.(html|gif|png|jpg))
+
+- url: .*
+  script: main.app
