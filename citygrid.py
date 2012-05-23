@@ -33,7 +33,7 @@ class CityGridHandler(webapp2.RequestHandler):
 		logger = logging.getLogger("citygrid.CityGridHandler.get_detail_location")
 		logger.debug("ENTER search_location=%(search_location)s", {"search_location": search_location})
 
-		if search_location == None:
+		if search_location is None:
 			return None
 
 		listing_id = search_location["id"]
@@ -55,7 +55,7 @@ class CityGridHandler(webapp2.RequestHandler):
 		logger = logging.getLogger("citygrid.CityGridHandler.track_location")
 		logger.debug("ENTER detail_location=%(detail_location)s, action_target=%(action_target)s", {"detail_location": detail_location, "action_target": action_target})
 
-		if detail_location == None:
+		if detail_location is None:
 			return False
 
 		listing_id = detail_location["id"]
@@ -68,7 +68,7 @@ class CityGridHandler(webapp2.RequestHandler):
 		logger.debug("url=%(url)s", {"url": url})
 
 		data = urllib2.urlopen(url).read()
-		if data != None:
+		if data is not None:
 			return True
 		else:
 			return False
@@ -82,14 +82,14 @@ class CityGridHandler(webapp2.RequestHandler):
 		listing_id=int(self.request.get("listing_id"))
 
 		search_location = self.get_search_location(what, where, listing_id)
-		if search_location != None:
+		if search_location is not None:
 			logger.debug("search_location=%(search_location)s", {"search_location": search_location})
 		else:
 			self.response.out.write("Search Location %(listing_id)s not found" % {"listing_id": listing_id})
 			return
 
 		detail_location = self.get_detail_location(search_location)
-		if detail_location != None:
+		if detail_location is not None:
 			logger.debug("detail_location=%(detail_location)s", {"detail_location": detail_location})
 		else:
 			self.response.out.write("Detail Location %(search_location)s not found" % {"search_location": search_location})
