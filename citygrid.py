@@ -31,7 +31,7 @@ class CityGridHandler(webapp2.RequestHandler):
 
 	def get_detail_location(self, search_location):
 		logger = logging.getLogger("citygrid.CityGridHandler.get_detail_location")
-		logger.debug("ENTER search_location=%(search_location)s", {"search_location": search_location})
+		logger.debug("ENTER search_location.id=%(search_location_id)s", {"search_location_id": search_location["id"]})
 
 		if search_location is None:
 			return None
@@ -53,7 +53,7 @@ class CityGridHandler(webapp2.RequestHandler):
 
 	def track_location(self, detail_location, action_target):
 		logger = logging.getLogger("citygrid.CityGridHandler.track_location")
-		logger.debug("ENTER detail_location=%(detail_location)s, action_target=%(action_target)s", {"detail_location": detail_location, "action_target": action_target})
+		logger.debug("ENTER detail_location.id=%(detail_location_id)s, action_target=%(action_target)s", {"detail_location_id": detail_location["id"], "action_target": action_target})
 
 		if detail_location is None:
 			return False
@@ -63,7 +63,7 @@ class CityGridHandler(webapp2.RequestHandler):
 		reference_id = detail_location["reference_id"]
 		device_id = str(uuid.uuid4())
 
-		url = "http://api.citygridmedia.com/ads/tracker/imp?reference_id=%(reference_id)s&placement=%(placement)s&mobile_type=iPhone%%20Monitor&muid=%(device_id)s&publisher=%(publisher)s&i=%(impression_id)s&listing_id=%(listing_id)s&action_target=%(action_target)s" %\
+		url = "http://api.citygridmedia.com/ads/tracker/imp?action_target=%(action_target)s&reference_id=%(reference_id)s&placement=%(placement)s&mobile_type=iPhone%%20Monitor&muid=%(device_id)s&publisher=%(publisher)s&i=%(impression_id)s&listing_id=%(listing_id)s" %\
 			  {"reference_id": reference_id, "placement": placement, "device_id": device_id, "publisher": publisher, "impression_id": impression_id, "listing_id": listing_id, "action_target": action_target}
 		logger.debug("url=%(url)s", {"url": url})
 
@@ -83,40 +83,40 @@ class CityGridHandler(webapp2.RequestHandler):
 
 		search_location = self.get_search_location(what, where, listing_id)
 		if search_location is not None:
-			logger.debug("search_location=%(search_location)s", {"search_location": search_location})
+			logger.debug("search_location.id=%(search_location_id)s", {"search_location_id": search_location["id"]})
 		else:
 			self.response.out.write("Search Location %(listing_id)s not found" % {"listing_id": listing_id})
 			return
 
 		detail_location = self.get_detail_location(search_location)
 		if detail_location is not None:
-			logger.debug("detail_location=%(detail_location)s", {"detail_location": detail_location})
+			logger.debug("detail_location.id=%(detail_location_id)s", {"detail_location_id": detail_location["id"]})
 		else:
 			self.response.out.write("Detail Location %(search_location)s not found" % {"search_location": search_location})
 			return
 
 		logger.debug("Invoking Listing Profile")
 		tracked_profile = self.track_location(detail_location, "listing_profile")
-		if tracked_profile:
+		if tracked_profile is not None:
 			logger.debug("profile tracked")
 		else:
-			self.response.out.write("Profile tracking failed for %(detail_location)s not found" % {"detail_location": detail_location})
+			self.response.out.write("Profile tracking failed for %(detail_location_id)s not found" % {"detail_location_id": detail_location["id"]})
 			return
 
 		logger.debug("Invoking Listing Review")
 		tracked_review = self.track_location(detail_location, "listing_review")
-		if tracked_review:
+		if tracked_review is not None:
 			logger.debug("review tracked")
 		else:
-			self.response.out.write("Review tracking failed for %(detail_location)s not found" % {"detail_location": detail_location})
+			self.response.out.write("Review tracking failed for %(detail_location_id)s not found" % {"detail_location_id": detail_location["id"]})
 			return
 
 		logger.debug("Invoking Listing Map")
 		tracked_map = self.track_location(detail_location, "listing_map")
-		if tracked_map:
+		if tracked_map is not None:
 			logger.debug("map tracked")
 		else:
-			self.response.out.write("Map tracking failed for %(detail_location)s not found" % {"detail_location": detail_location})
+			self.response.out.write("Map tracking failed for %(detail_location_id)s not found" % {"detail_location_id": detail_location["id"]})
 			return
 
 		self.response.out.write("Success")
