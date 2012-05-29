@@ -95,7 +95,6 @@ class CityGridHandler(webapp2.RequestHandler):
 			self.response.out.write("Detail Location %(search_location)s not found" % {"search_location": search_location})
 			return
 
-		logger.debug("Invoking Listing Profile")
 		tracked_profile = self.track_location(detail_location, "listing_profile")
 		if tracked_profile is not None:
 			logger.debug("profile tracked")
@@ -103,7 +102,6 @@ class CityGridHandler(webapp2.RequestHandler):
 			self.response.out.write("Profile tracking failed for %(detail_location_id)s not found" % {"detail_location_id": detail_location["id"]})
 			return
 
-		logger.debug("Invoking Listing Review")
 		tracked_review = self.track_location(detail_location, "listing_review")
 		if tracked_review is not None:
 			logger.debug("review tracked")
@@ -111,7 +109,6 @@ class CityGridHandler(webapp2.RequestHandler):
 			self.response.out.write("Review tracking failed for %(detail_location_id)s not found" % {"detail_location_id": detail_location["id"]})
 			return
 
-		logger.debug("Invoking Listing Map")
 		tracked_map = self.track_location(detail_location, "listing_map")
 		if tracked_map is not None:
 			logger.debug("map tracked")
